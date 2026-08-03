@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b3a6b">
+<title>택시운전자격시험 모의고사</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --ink:#16233a; --sub:#5d6b83; --line:#e2e7f0;
+  --brand:#1b3a6b; --brand2:#2f6fd0; --ok:#0f9d58; --no:#d93025; --warn:#f9ab00;
+  --shadow:0 1px 3px rgba(20,35,60,.08),0 6px 18px rgba(20,35,60,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#11151d;--card:#1a2029;--ink:#e8edf5;--sub:#9aa7bd;--line:#2a323f;
+        --brand:#4b8bf5;--brand2:#4b8bf5;--shadow:0 1px 3px rgba(0,0,0,.4)}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.wrap{max-width:720px;margin:0 auto;padding:12px}
+.hide{display:none!important}
+
+/* 헤더 */
+header{position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  padding:calc(env(safe-area-inset-top) + 10px) 12px 10px}
+header .hd{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;margin:0;font-weight:700;flex:1}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;
+  background:rgba(255,255,255,.16);padding:4px 10px;border-radius:8px}
+.timer.warn{background:var(--warn);color:#3a2c00}
+.timer.danger{background:var(--no);color:#fff}
+.iconbtn{background:rgba(255,255,255,.16);border:0;color:#fff;font-size:14px;
+  padding:6px 11px;border-radius:8px;cursor:pointer;font-weight:600}
+
+/* 카드/버튼 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.btn{display:block;width:100%;padding:15px;border-radius:12px;border:0;
+  background:var(--brand2);color:#fff;font-size:16px;font-weight:700;
+  cursor:pointer;margin-bottom:10px;font-family:inherit}
+.btn.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--sub);border:1px solid var(--line)}
+.btn:active{transform:scale(.99)}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:8px}
+.row .btn{margin-bottom:0}
+h2{font-size:19px;margin:4px 0 14px}
+h3{font-size:15px;margin:0 0 10px;color:var(--sub);font-weight:700}
+.muted{color:var(--sub);font-size:13.5px}
+.center{text-align:center}
+
+/* 진행바 */
+.pbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0}
+.pbar>i{display:block;height:100%;background:var(--brand2);transition:width .25s}
+
+/* 문제 */
+.qmeta{display:flex;justify-content:space-between;align-items:center;
+  font-size:12.5px;color:var(--sub);margin-bottom:8px}
+.tag{background:var(--line);padding:2px 8px;border-radius:99px;font-weight:600}
+.qtext{font-size:17.5px;font-weight:700;line-height:1.55;margin-bottom:6px;
+  white-space:pre-wrap;word-break:keep-all}
+.qsub{font-size:14.5px;color:var(--sub);margin-bottom:10px;white-space:pre-wrap;word-break:keep-all}
+.figure{text-align:center;margin:12px 0;padding:12px;background:var(--bg);
+  border-radius:12px;border:1px solid var(--line)}
+.figure svg{max-width:210px;width:100%;height:auto}
+
+.opts{margin-top:12px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;
+  padding:13px 14px;margin-bottom:9px;border-radius:12px;cursor:pointer;
+  background:var(--card);border:1.5px solid var(--line);color:var(--ink);
+  font-size:15.5px;font-family:inherit;line-height:1.5;word-break:keep-all}
+.opt .n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--line);
+  color:var(--sub);font-size:13px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;margin-top:1px}
+.opt.sel{border-color:var(--brand2);background:rgba(47,111,208,.07)}
+.opt.sel .n{background:var(--brand2);color:#fff}
+.opt.ok{border-color:var(--ok);background:rgba(15,157,88,.10)}
+.opt.ok .n{background:var(--ok);color:#fff}
+.opt.no{border-color:var(--no);background:rgba(217,48,37,.10)}
+.opt.no .n{background:var(--no);color:#fff}
+
+.exp{margin-top:12px;padding:13px;border-radius:12px;background:var(--bg);
+  border-left:4px solid var(--brand2);font-size:14.5px;word-break:keep-all}
+.exp b{display:block;margin-bottom:4px;font-size:13px;color:var(--sub)}
+
+/* 하단바 */
+.navbar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);margin:0 -12px;z-index:40}
+.navbar .in{max-width:720px;margin:0 auto;display:flex;gap:8px}
+.navbar button{flex:1;padding:14px;border-radius:11px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:15px;font-weight:700;
+  cursor:pointer;font-family:inherit}
+.navbar button.pri{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+.navbar button:disabled{opacity:.4}
+
+/* 문항 그리드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:7px}
+.grid button{aspect-ratio:1;border-radius:9px;border:1px solid var(--line);
+  background:var(--card);color:var(--sub);font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;padding:0}
+.grid button.done{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+.grid button.cur{outline:2.5px solid var(--warn);outline-offset:1px}
+.grid button.wrong{background:var(--no);color:#fff;border-color:var(--no)}
+.grid button.right{background:var(--ok);color:#fff;border-color:var(--ok)}
+
+/* 결과 */
+.score{text-align:center;padding:22px 12px}
+.score .n{font-size:54px;font-weight:800;line-height:1.05}
+.score .verdict{font-size:21px;font-weight:800;margin-top:6px}
+.pass{color:var(--ok)} .fail{color:var(--no)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center}
+th{color:var(--sub);font-size:12.5px;font-weight:700}
+td:first-child,th:first-child{text-align:left}
+.bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;min-width:54px}
+.bar>i{display:block;height:100%;background:var(--brand2)}
+
+/* 모달 */
+.modal{position:fixed;inset:0;background:rgba(10,16,26,.55);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:18px}
+.modal .box{background:var(--card);border-radius:16px;padding:20px;
+  max-width:400px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.28)}
+input[type=password],input[type=text]{width:100%;padding:13px;border-radius:11px;
+  border:1.5px solid var(--line);background:var(--bg);color:var(--ink);
+  font-size:16px;font-family:inherit;margin-bottom:10px}
+.err{color:var(--no);font-size:13.5px;margin-bottom:8px}
+.chk{display:flex;align-items:center;gap:10px;padding:12px 0;font-size:15px}
+.chk input{width:20px;height:20px;accent-color:var(--brand2)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <h1 id="hdTitle">🚕 택시운전자격시험</h1>
+    <span id="hdTimer" class="timer hide">70:00</span>
+    <button id="hdBtn" class="iconbtn hide">나가기</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 잠금 ============ -->
+<section id="vLock" class="hide">
+  <div class="card" style="margin-top:40px">
+    <h2>🔒 잠금</h2>
+    <p class="muted">비밀번호를 입력하세요.</p>
+    <input type="password" id="lockPw" inputmode="numeric" placeholder="비밀번호">
+    <div id="lockErr" class="err hide">비밀번호가 올바르지 않습니다.</div>
+    <button class="btn" id="lockGo">확인</button>
+  </div>
+</section>
+
+<!-- ============ 홈 ============ -->
+<section id="vHome">
+  <div class="card">
+    <h2 style="margin-bottom:6px">모의고사</h2>
+    <p class="muted" style="margin:0 0 14px">
+      70문항 · 70분 · <b>42문항(60%) 이상</b> 합격<br>
+      법규 20 · 안전운행 20 · 운송서비스 20 · 서울지리 10
+    </p>
+    <button class="btn" id="goExam">🚕 모의고사 시작</button>
+    <div class="row">
+      <button class="btn sec" id="goPractice">과목별 연습</button>
+      <button class="btn sec" id="goReview">오답노트 <span id="wrongCnt"></span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>기록</h3>
+    <div id="homeStats"></div>
+    <button class="btn ghost" id="goStats" style="margin-top:10px">상세 통계</button>
+  </div>
+
+  <div class="card">
+    <h3>문제 은행</h3>
+    <div id="bankInfo" class="muted"></div>
+    <button class="btn ghost" id="goSettings" style="margin-top:12px">⚙️ 설정 · 백업</button>
+  </div>
+</section>
+
+<!-- ============ 과목별 연습 ============ -->
+<section id="vPractice" class="hide">
+  <div class="card">
+    <h2>과목별 연습</h2>
+    <p class="muted">시간 제한 없이 풀고 즉시 정답을 확인합니다.</p>
+    <button class="btn" data-sub="1">① 법규 <span class="muted" id="ps1"></span></button>
+    <button class="btn" data-sub="2">② 안전운행요령 <span class="muted" id="ps2"></span></button>
+    <button class="btn" data-sub="3">③ 운송서비스 <span class="muted" id="ps3"></span></button>
+    <button class="btn" data-sub="4">④ 서울지역 지리 <span class="muted" id="ps4"></span></button>
+    <button class="btn ghost" data-sub="0">전 과목 랜덤 30문항</button>
+    <button class="btn ghost back">← 돌아가기</button>
+  </div>
+</section>
+
+<!-- ============ 시험 ============ -->
+<section id="vExam" class="hide">
+  <div class="pbar"><i id="examBar"></i></div>
+  <div class="card">
+    <div class="qmeta">
+      <span><span class="tag" id="qSubject"></span> <span id="qIdx"></span></span>
+      <span class="muted" id="qId"></span>
+    </div>
+    <div class="qtext" id="qText"></div>
+    <div class="qsub hide" id="qSub"></div>
+    <div class="figure hide" id="qFig"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="exp hide" id="qExp"></div>
+  </div>
+  <div class="card">
+    <h3>문항 이동</h3>
+    <div class="grid" id="qGrid"></div>
+  </div>
+  <div class="navbar"><div class="in">
+    <button id="btnPrev">← 이전</button>
+    <button id="btnNext" class="pri">다음 →</button>
+    <button id="btnSubmit" class="pri hide">제출</button>
+  </div></div>
+</section>
+
+<!-- ============ 결과 ============ -->
+<section id="vResult" class="hide">
+  <div class="card score">
+    <div class="n" id="rScore"></div>
+    <div class="muted" id="rSub"></div>
+    <div class="verdict" id="rVerdict"></div>
+    <div class="muted" id="rTime" style="margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3>과목별 결과</h3>
+    <table id="rTable"></table>
+  </div>
+  <div class="card">
+    <h3>문항별 정오</h3>
+    <div class="grid" id="rGrid"></div>
+    <p class="muted" style="margin:10px 0 0">번호를 누르면 해설을 봅니다.</p>
+  </div>
+  <div class="card">
+    <button class="btn" id="rReview">틀린 문항 복습</button>
+    <button class="btn sec" id="rHome">홈으로</button>
+  </div>
+</section>
+
+<!-- ============ 오답노트 ============ -->
+<section id="vReview" class="hide">
+  <div class="card">
+    <h2>오답노트</h2>
+    <div id="reviewInfo" class="muted"></div>
+    <button class="btn" id="reviewStart" style="margin-top:12px">오답 다시 풀기</button>
+    <button class="btn ghost" id="reviewClear">오답노트 비우기</button>
+    <button class="btn ghost back">← 돌아가기</button>
+  </div>
+  <div id="reviewList"></div>
+</section>
+
+<!-- ============ 통계 ============ -->
+<section id="vStats" class="hide">
+  <div class="card">
+    <h2>통계</h2>
+    <div id="statBox"></div>
+  </div>
+  <div class="card">
+    <h3>과목별 정답률</h3>
+    <table id="statTable"></table>
+  </div>
+  <div class="card">
+    <h3>최근 응시 기록</h3>
+    <table id="histTable"></table>
+    <button class="btn ghost back" style="margin-top:12px">← 돌아가기</button>
+  </div>
+</section>
+
+<!-- ============ 설정 ============ -->
+<section id="vSettings" class="hide">
+  <div class="card">
+    <h2>설정</h2>
+    <label class="chk">
+      <input type="checkbox" id="setShuffle"> 선택지 순서 섞기
+    </label>
+    <label class="chk">
+      <input type="checkbox" id="setInstant"> 모의고사에서도 즉시 정답 표시
+    </label>
+  </div>
+  <div class="card">
+    <h3>🔒 비밀번호 잠금</h3>
+    <div id="pwState" class="muted" style="margin-bottom:10px"></div>
+    <button class="btn sec" id="pwSet">비밀번호 설정 / 변경</button>
+    <button class="btn ghost" id="pwOff">잠금 해제</button>
+  </div>
+  <div class="card">
+    <h3>💾 백업 · 복원</h3>
+    <p class="muted">기록·오답노트·설정을 JSON 파일로 저장하고 되돌릴 수 있습니다.</p>
+    <button class="btn sec" id="doExport">JSON 내려받기</button>
+    <button class="btn sec" id="doImport">JSON 불러오기</button>
+    <input type="file" id="fileIn" accept="application/json,.json" class="hide">
+    <button class="btn ghost" id="doReset">전체 기록 초기화</button>
+  </div>
+  <div class="card">
+    <button class="btn ghost back">← 돌아가기</button>
+  </div>
+</section>
+
+</div><!--/wrap-->
+
+<!-- 모달 -->
+<div id="modal" class="modal hide"><div class="box" id="modalBox"></div></div>
+
+<script>
+/* ================= 데이터 ================= */
+const QUESTIONS = __QUESTIONS__;
+
+/* ================= 그림(SVG) ================= */
+const FIG = (function(){
+  const tri = inner => `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 14 L191 168 H9 Z" fill="#f7c600" stroke="#d32f2f" stroke-width="11" stroke-linejoin="round"/>
+    ${inner}</svg>`;
+  const circ = inner => `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="88" fill="#fff" stroke="#d32f2f" stroke-width="14"/>
+    ${inner}</svg>`;
+  const lamp = inner => `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="140" rx="14" fill="#1c2530"/>${inner}</svg>`;
+
+  return {
+  /* 백색 지그재그 노면표시 = 서행 (1회 Q13 · 7회 Q10) */
+  zigzag:`<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="180" fill="#78808c"/>
+    <path d="M62 16 L86 46 L62 76 L86 106 L62 136 L86 166" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M114 16 L138 46 L114 76 L138 106 L114 136 L138 166" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  /* 터널 형상 원형 (2회 Q36) */
+  tunnel:`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="88" fill="#1d4ea8"/>
+    <path d="M52 148 V104 a48 48 0 0 1 96 0 v44 Z" fill="#fff"/>
+    <path d="M78 148 V108 a22 22 0 0 1 44 0 v40 Z" fill="#1d4ea8"/>
+  </svg>`,
+
+  /* 주행빔(상향등) 표시등 (3회 Q22) */
+  highbeam: lamp(`
+    <path d="M62 34 h16 a36 36 0 0 1 0 72 H62 Z" fill="#2f6fd0"/>
+    <g stroke="#2f6fd0" stroke-width="9" stroke-linecap="round">
+      <line x1="94" y1="46" x2="150" y2="46"/>
+      <line x1="94" y1="70" x2="150" y2="70"/>
+      <line x1="94" y1="94" x2="150" y2="94"/>
+    </g>`),
+
+  /* 차선변경 금지 (3회 Q37) */
+  nolane: circ(`
+    <g stroke="#31404f" stroke-width="8" stroke-linecap="round">
+      <line x1="58" y1="42" x2="58" y2="158" stroke-dasharray="16 14"/>
+      <line x1="142" y1="42" x2="142" y2="158" stroke-dasharray="16 14"/>
+    </g>
+    <path d="M100 148 V112 q0-22 -22-22 H70" fill="none" stroke="#31404f" stroke-width="10" stroke-linecap="round"/>
+    <path d="M56 90 l20-11 v22 Z" fill="#31404f"/>
+    <line x1="42" y1="158" x2="158" y2="42" stroke="#d32f2f" stroke-width="15" stroke-linecap="round"/>`),
+
+  /* 강변도로 주의표지 (4회 Q12) */
+  riverroad: tri(`
+    <rect x="42" y="120" width="116" height="30" rx="4" fill="#2f6fd0"/>
+    <path d="M42 128 q14-9 29 0 t29 0 t29 0 t29 0" fill="none" stroke="#fff" stroke-width="5"/>
+    <path d="M42 142 q14-9 29 0 t29 0 t29 0 t29 0" fill="none" stroke="#fff" stroke-width="5"/>
+    <g transform="rotate(24 104 96)">
+      <rect x="64" y="78" width="80" height="30" rx="7" fill="#1c1c1c"/>
+      <path d="M78 78 l12-16 h30 l12 16 Z" fill="#1c1c1c"/>
+      <circle cx="84" cy="112" r="9" fill="#1c1c1c"/><circle cx="126" cy="112" r="9" fill="#1c1c1c"/>
+    </g>`),
+
+  /* 비상경고등 ⇦⇨ (4회 Q22) */
+  hazard: lamp(`
+    <path d="M86 40 L46 70 L86 100 V82 H70 V58 H86 Z" fill="#d93025"/>
+    <path d="M114 40 L154 70 L114 100 V82 H130 V58 H114 Z" fill="#d93025"/>`),
+
+  /* 규제표지 (5회 Q10) */
+  regulatory: circ(`
+    <g fill="#31404f">
+      <rect x="52" y="92" width="96" height="30" rx="7"/>
+      <path d="M70 92 l14-20 h32 l14 20 Z"/>
+      <circle cx="74" cy="128" r="10"/><circle cx="126" cy="128" r="10"/>
+    </g>
+    <line x1="40" y1="160" x2="160" y2="40" stroke="#d32f2f" stroke-width="15" stroke-linecap="round"/>`),
+
+  /* 주차브레이크 Ⓟ (5회 Q22) */
+  parking: lamp(`
+    <circle cx="100" cy="60" r="30" fill="none" stroke="#d93025" stroke-width="8"/>
+    <text x="100" y="74" font-size="38" font-weight="700" fill="#d93025" text-anchor="middle" font-family="sans-serif">P</text>
+    <text x="100" y="116" font-size="19" font-weight="700" fill="#d93025" text-anchor="middle" font-family="sans-serif" letter-spacing="2">PARKING</text>`),
+
+  /* 교통신호 확인 ❌+⬇ (5회 Q32) */
+  signalcheck:`<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="58" cy="65" r="42" fill="#22303d"/>
+    <path d="M40 47 L76 83 M76 47 L40 83" stroke="#fff" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="142" cy="65" r="42" fill="#22303d"/>
+    <path d="M142 40 V88 M124 70 l18 18 l18-18" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  /* 안전벨트 미착용 (6회 Q22) */
+  seatbelt: lamp(`
+    <circle cx="84" cy="40" r="14" fill="#d93025"/>
+    <path d="M70 60 h30 a10 10 0 0 1 10 10 v34 H70 Z" fill="#d93025"/>
+    <path d="M62 106 h56 v10 H62 Z" fill="#d93025"/>
+    <path d="M118 46 L58 118" stroke="#d93025" stroke-width="11" stroke-linecap="round"/>`),
+
+  /* 우로 굽은 도로 (t-08) */
+  curveright: tri(`
+    <path d="M100 152 V116 q0-30 24-42 t24-30" fill="none" stroke="#1c1c1c" stroke-width="13" stroke-linecap="round"/>`),
+
+  /* Y자형 교차로 (t-09) */
+  yjunction: tri(`
+    <path d="M100 156 V112 M100 112 L66 62 M100 112 L134 62" fill="none" stroke="#1c1c1c" stroke-width="13" stroke-linecap="round"/>`),
+
+  /* 노면 고르지 못함 (t-13) */
+  rough: tri(`
+    <path d="M40 130 q15-26 30 0 t30 0 t30 0 t30 0" fill="none" stroke="#1c1c1c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M46 96 q14-22 28 0 t28 0 t28 0" fill="none" stroke="#1c1c1c" stroke-width="10" stroke-linecap="round" opacity=".85"/>`),
+
+  /* 양측방통행 (t-14) */
+  bothsides: tri(`
+    <path d="M100 156 V112 M100 112 q0-26 -26-34 M100 112 q0-26 26-34" fill="none" stroke="#1c1c1c" stroke-width="13" stroke-linecap="round"/>
+    <path d="M62 66 l12 16 h-24 Z" fill="#1c1c1c"/><path d="M138 66 l12 16 h-24 Z" fill="#1c1c1c"/>`)
+  };
+})();
+
+const FIGMAP = {
+  'c1-13':'zigzag', 'c7-10':'zigzag', 'c2-36':'tunnel', 'c3-22':'highbeam',
+  'c3-37':'nolane', 'c4-12':'riverroad', 'c4-22':'hazard', 'c5-10':'regulatory',
+  'c5-22':'parking', 'c5-32':'signalcheck', 'c6-22':'seatbelt',
+  't-08':'curveright', 't-09':'yjunction', 't-13':'rough', 't-14':'bothsides'
+};
+
+/* ================= 상수 ================= */
+const KEY = 'taxiExamStats_v1';
+const SUBJECT_QUOTA = {1:20, 2:20, 3:20, 4:10};
+const SUBJECT_NAME = {1:'법규', 2:'안전운행', 3:'운송서비스', 4:'서울지리'};
+const EXAM_MIN = 70, PASS = 42, TOTAL = 70;
+const NUM = ['①','②','③','④'];
+
+/* ================= 저장소 ================= */
+const DEFAULT_STATE = {
+  v:1, history:[], wrong:{}, seen:{},
+  settings:{shuffle:true, instant:false},
+  lock:{on:false, hash:''}
+};
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return structuredClone(DEFAULT_STATE);
+    const d = JSON.parse(raw);
+    return Object.assign(structuredClone(DEFAULT_STATE), d,
+      {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{}),
+       lock:Object.assign({}, DEFAULT_STATE.lock, d.lock||{})});
+  }catch(e){ return structuredClone(DEFAULT_STATE); }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function hash(s){ let h=5381; for(let i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))>>>0; return String(h); }
+
+/* ================= 유틸 ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function sample(arr,n){ return shuffle(arr).slice(0,n); }
+const byId = {}; QUESTIONS.forEach(q=>byId[q.id]=q);
+
+function show(v){
+  ['vLock','vHome','vExam','vResult','vReview','vStats','vPractice','vSettings']
+    .forEach(x=>$(x).classList.toggle('hide', x!==v));
+  window.scrollTo(0,0);
+}
+function modal(html){ $('modalBox').innerHTML = html; $('modal').classList.remove('hide'); }
+function closeModal(){ $('modal').classList.add('hide'); }
+$('modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeModal(); });
+
+/* ================= 시험 상태 ================= */
+let E = null;  // {items, answers, idx, mode, startedAt, endsAt, timer, finished}
+
+function buildExam(){
+  const items = [];
+  for(const sub of [1,2,3,4]){
+    const pool = QUESTIONS.filter(q=>q.subject===+sub);
+    items.push(...sample(pool, Math.min(SUBJECT_QUOTA[sub], pool.length)));
+  }
+  return items;
+}
+function prepItem(q){
+  const order = S.settings.shuffle ? shuffle([0,1,2,3]) : [0,1,2,3];
+  return {q, order, answer:order.indexOf(q.answer)};
+}
+
+function startExam(mode, list){
+  const base = list || buildExam();
+  E = {
+    mode,
+    items: base.map(prepItem),
+    answers: new Array(base.length).fill(null),
+    idx:0, finished:false, startedAt:Date.now(),
+    endsAt: mode==='exam' ? Date.now()+EXAM_MIN*60000 : null
+  };
+  $('hdBtn').classList.remove('hide');
+  $('hdTimer').classList.toggle('hide', mode!=='exam');
+  $('hdTitle').textContent = mode==='exam' ? '모의고사' :
+                             mode==='review' ? '오답 복습' : '연습';
+  if(mode==='exam') tick();
+  show('vExam'); renderQ();
+}
+
+let timerId=null;
+function tick(){
+  clearInterval(timerId);
+  timerId = setInterval(()=>{
+    if(!E || E.finished || E.mode!=='exam'){ clearInterval(timerId); return; }
+    const left = Math.max(0, E.endsAt - Date.now());
+    const m = Math.floor(left/60000), s = Math.floor(left%60000/1000);
+    const el = $('hdTimer');
+    el.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    el.className = 'timer' + (left<=60000?' danger':left<=300000?' warn':'');
+    if(left<=0){ clearInterval(timerId); finishExam(true); }
+  }, 250);
+}
+
+function renderQ(){
+  const it = E.items[E.idx], q = it.q;
+  $('examBar').style.width = ((E.idx+1)/E.items.length*100)+'%';
+  $('qSubject').textContent = SUBJECT_NAME[q.subject];
+  $('qIdx').textContent = `${E.idx+1} / ${E.items.length}`;
+  $('qId').textContent = q.id;
+
+  // 문제 본문 + 보조설명 분리
+  const parts = q.q.split('\n');
+  $('qText').textContent = parts[0];
+  const sub = parts.slice(1).join('\n');
+  $('qSub').textContent = sub;
+  $('qSub').classList.toggle('hide', !sub);
+
+  const fig = FIGMAP[q.id];
+  $('qFig').classList.toggle('hide', !fig);
+  if(fig) $('qFig').innerHTML = FIG[fig];
+
+  const picked = E.answers[E.idx];
+  const reveal = E.finished || (E.mode!=='exam') || S.settings.instant;
+  const showAns = reveal && picked !== null;
+
+  $('qOpts').innerHTML = it.order.map((orig,i)=>{
+    let cls='opt';
+    if(showAns){
+      if(i===it.answer) cls+=' ok';
+      else if(i===picked) cls+=' no';
+    } else if(i===picked) cls+=' sel';
+    return `<button class="${cls}" data-i="${i}">
+      <span class="n">${NUM[i]}</span><span>${esc(q.choices[orig])}</span></button>`;
+  }).join('');
+
+  $('qExp').classList.toggle('hide', !(showAns && q.exp));
+  if(showAns && q.exp) $('qExp').innerHTML = '<b>해설</b>'+esc(q.exp);
+
+  $('btnPrev').disabled = E.idx===0;
+  const last = E.idx===E.items.length-1;
+  $('btnNext').classList.toggle('hide', last);
+  $('btnSubmit').classList.toggle('hide', !last);
+  $('btnSubmit').textContent = E.finished ? '결과 보기' : '제출';
+  renderGrid();
+}
+
+function renderGrid(){
+  $('qGrid').innerHTML = E.items.map((it,i)=>{
+    let cls='';
+    if(E.finished) cls = E.answers[i]===it.answer ? 'right' : 'wrong';
+    else if(E.answers[i]!==null) cls='done';
+    if(i===E.idx) cls+=' cur';
+    return `<button class="${cls}" data-g="${i}">${i+1}</button>`;
+  }).join('');
+}
+
+$('qOpts').addEventListener('click', e=>{
+  const b = e.target.closest('.opt'); if(!b || E.finished) return;
+  const i = +b.dataset.i;
+  const reveal = (E.mode!=='exam') || S.settings.instant;
+  if(reveal && E.answers[E.idx]!==null) return;   // 정답 공개 후 변경 불가
+  E.answers[E.idx] = i;
+  recordSeen(E.items[E.idx], i);
+  renderQ();
+});
+$('qGrid').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-g]'); if(!b) return;
+  E.idx = +b.dataset.g; renderQ();
+});
+$('btnPrev').onclick = ()=>{ if(E.idx>0){E.idx--; renderQ();} };
+$('btnNext').onclick = ()=>{ if(E.idx<E.items.length-1){E.idx++; renderQ();} };
+$('btnSubmit').onclick = ()=>{
+  if(E.finished){ showResult(); return; }
+  const un = E.answers.filter(a=>a===null).length;
+  modal(`<h2 style="margin-top:0">제출할까요?</h2>
+    <p class="muted">${un>0?`미응답 <b style="color:var(--no)">${un}문항</b>이 있습니다.`:'모든 문항에 답했습니다.'}</p>
+    <button class="btn" onclick="finishExam()">제출하기</button>
+    <button class="btn ghost" onclick="closeModal()">계속 풀기</button>`);
+};
+
+function recordSeen(it, picked){
+  const q = it.q;
+  const st = S.seen[q.id] || (S.seen[q.id]={n:0,ok:0});
+  st.n++;
+  if(picked===it.answer){ st.ok++; delete S.wrong[q.id]; }
+  else { S.wrong[q.id] = (S.wrong[q.id]||0)+1; }
+  save();
+}
+
+function finishExam(auto){
+  closeModal();
+  if(!E || E.finished) return;
+  clearInterval(timerId);
+  E.finished = true;
+  E.elapsed = Date.now()-E.startedAt;
+
+  // 모의고사에서 즉시표시가 꺼져 있던 경우 여기서 일괄 기록
+  if(E.mode==='exam' && !S.settings.instant){
+    E.items.forEach((it,i)=>{ if(E.answers[i]!==null) recordSeen(it, E.answers[i]); });
+  }
+  const correct = E.items.filter((it,i)=>E.answers[i]===it.answer).length;
+  E.correct = correct;
+
+  if(E.mode==='exam'){
+    S.history.unshift({
+      t: Date.now(), score: correct, total: E.items.length,
+      pass: correct>=PASS, ms: E.elapsed,
+      bySub: [1,2,3,4].map(s=>{
+        const idxs = E.items.map((it,i)=>it.q.subject===s?i:-1).filter(i=>i>=0);
+        return {s, n:idxs.length, ok:idxs.filter(i=>E.answers[i]===E.items[i].answer).length};
+      })
+    });
+    S.history = S.history.slice(0,50);
+    save();
+  }
+  if(auto) alert('시험 시간이 종료되었습니다.');
+  showResult();
+}
+window.finishExam = finishExam; window.closeModal = closeModal;
+
+function showResult(){
+  const n = E.items.length, c = E.correct;
+  $('rScore').textContent = `${c} / ${n}`;
+  $('rSub').textContent = `정답률 ${Math.round(c/n*100)}%`;
+  if(E.mode==='exam'){
+    const ok = c>=PASS;
+    $('rVerdict').textContent = ok ? '✅ 합격' : '❌ 불합격';
+    $('rVerdict').className = 'verdict '+(ok?'pass':'fail');
+    $('rVerdict').classList.remove('hide');
+  } else {
+    $('rVerdict').classList.add('hide');
+  }
+  const ms = E.elapsed||0;
+  $('rTime').textContent = `소요 ${Math.floor(ms/60000)}분 ${Math.floor(ms%60000/1000)}초`;
+
+  let rows = '<tr><th>과목</th><th>정답</th><th>정답률</th></tr>';
+  for(const s of [1,2,3,4]){
+    const idxs = E.items.map((it,i)=>it.q.subject===s?i:-1).filter(i=>i>=0);
+    if(!idxs.length) continue;
+    const ok = idxs.filter(i=>E.answers[i]===E.items[i].answer).length;
+    const p = Math.round(ok/idxs.length*100);
+    rows += `<tr><td>${SUBJECT_NAME[s]}</td><td>${ok}/${idxs.length}</td>
+      <td><div class="bar"><i style="width:${p}%"></i></div>${p}%</td></tr>`;
+  }
+  $('rTable').innerHTML = rows;
+  $('rGrid').innerHTML = E.items.map((it,i)=>
+    `<button class="${E.answers[i]===it.answer?'right':'wrong'}" data-r="${i}">${i+1}</button>`).join('');
+  $('hdTimer').classList.add('hide');
+  show('vResult');
+}
+$('rGrid').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-r]'); if(!b) return;
+  E.idx=+b.dataset.r; show('vExam'); renderQ();
+});
+$('rHome').onclick = ()=>goHome();
+$('rReview').onclick = ()=>{
+  const wrong = E.items.filter((it,i)=>E.answers[i]!==it.answer).map(it=>it.q);
+  if(!wrong.length){ alert('틀린 문항이 없습니다. 🎉'); return; }
+  startExam('review', wrong);
+};
+
+/* ================= 홈 ================= */
+function goHome(){
+  clearInterval(timerId); E=null;
+  $('hdBtn').classList.add('hide'); $('hdTimer').classList.add('hide');
+  $('hdTitle').textContent='🚕 택시운전자격시험';
+  renderHome(); show('vHome');
+}
+$('hdBtn').onclick = ()=>{
+  if(E && !E.finished && !confirm('시험을 중단하고 나갈까요? 기록은 저장되지 않습니다.')) return;
+  goHome();
+};
+document.querySelectorAll('.back').forEach(b=>b.onclick=()=>goHome());
+
+function renderHome(){
+  const w = Object.keys(S.wrong).length;
+  $('wrongCnt').textContent = w ? `(${w})` : '';
+  const h = S.history;
+  if(!h.length){
+    $('homeStats').innerHTML = '<p class="muted" style="margin:0">아직 응시 기록이 없습니다.</p>';
+  } else {
+    const best = Math.max(...h.map(x=>x.score));
+    const avg = (h.reduce((a,x)=>a+x.score,0)/h.length).toFixed(1);
+    const passN = h.filter(x=>x.pass).length;
+    $('homeStats').innerHTML = `
+      <table><tr><th>응시</th><th>평균</th><th>최고</th><th>합격</th></tr>
+      <tr><td style="text-align:center">${h.length}회</td><td>${avg}점</td>
+      <td>${best}점</td><td>${passN}회</td></tr></table>`;
+  }
+  const cnt = {}; QUESTIONS.forEach(q=>cnt[q.subject]=(cnt[q.subject]||0)+1);
+  $('bankInfo').innerHTML =
+    `총 <b>${QUESTIONS.length}문항</b> · 법규 ${cnt[1]} · 안전운행 ${cnt[2]} · 운송서비스 ${cnt[3]} · 지리 ${cnt[4]}
+     <br>CBT 기출복원 1~7회 + 텍스트 기출`;
+  [1,2,3,4].forEach(s=>{ const el=$('ps'+s); if(el) el.textContent=`(${cnt[s]})`; });
+}
+
+$('goExam').onclick = ()=>{
+  modal(`<h2 style="margin-top:0">모의고사 시작</h2>
+    <p class="muted">70문항 · 제한시간 70분<br>42문항 이상 정답 시 합격입니다.</p>
+    <button class="btn" onclick="closeModal();startExam('exam')">시작</button>
+    <button class="btn ghost" onclick="closeModal()">취소</button>`);
+};
+window.startExam = startExam;
+$('goPractice').onclick = ()=>show('vPractice');
+$('goReview').onclick = ()=>{ renderReview(); show('vReview'); };
+$('goStats').onclick = ()=>{ renderStats(); show('vStats'); };
+$('goSettings').onclick = ()=>{ renderSettings(); show('vSettings'); };
+
+$('vPractice').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-sub]'); if(!b) return;
+  const s=+b.dataset.sub;
+  const pool = s ? QUESTIONS.filter(q=>q.subject===s) : QUESTIONS;
+  startExam('practice', sample(pool, Math.min(s?30:30, pool.length)));
+});
+
+/* ================= 오답노트 ================= */
+function renderReview(){
+  const ids = Object.keys(S.wrong).filter(id=>byId[id]);
+  $('reviewInfo').innerHTML = ids.length
+    ? `틀린 문항 <b>${ids.length}개</b>가 있습니다.` : '오답노트가 비어 있습니다.';
+  $('reviewStart').disabled = !ids.length;
+  $('reviewList').innerHTML = ids.slice(0,60).map(id=>{
+    const q = byId[id];
+    return `<div class="card"><div class="qmeta">
+      <span><span class="tag">${SUBJECT_NAME[q.subject]}</span> ${q.id}</span>
+      <span class="muted">${S.wrong[id]}회 틀림</span></div>
+      <div class="qtext" style="font-size:15.5px">${esc(q.q.split('\n')[0])}</div>
+      <div class="exp" style="margin-top:10px"><b>정답</b>${esc(q.choices[q.answer])}</div></div>`;
+  }).join('');
+}
+$('reviewStart').onclick = ()=>{
+  const list = Object.keys(S.wrong).filter(id=>byId[id]).map(id=>byId[id]);
+  if(list.length) startExam('review', list.slice(0,70));
+};
+$('reviewClear').onclick = ()=>{
+  if(confirm('오답노트를 모두 비울까요?')){ S.wrong={}; save(); renderReview(); }
+};
+
+/* ================= 통계 ================= */
+function renderStats(){
+  const h=S.history;
+  const seenIds = Object.keys(S.seen);
+  const tot = seenIds.reduce((a,id)=>a+S.seen[id].n,0);
+  const ok = seenIds.reduce((a,id)=>a+S.seen[id].ok,0);
+  $('statBox').innerHTML = `<table>
+    <tr><th>응시 횟수</th><th>합격</th><th>푼 문항</th><th>누적 정답률</th></tr>
+    <tr><td style="text-align:center">${h.length}회</td><td>${h.filter(x=>x.pass).length}회</td>
+    <td>${tot}</td><td>${tot?Math.round(ok/tot*100):0}%</td></tr></table>
+    <p class="muted" style="margin:10px 0 0">경험한 문항 ${seenIds.length} / ${QUESTIONS.length}</p>`;
+
+  let rows='<tr><th>과목</th><th>푼 수</th><th>정답률</th></tr>';
+  for(const s of [1,2,3,4]){
+    let n=0,o=0;
+    seenIds.forEach(id=>{ if(byId[id] && byId[id].subject===s){ n+=S.seen[id].n; o+=S.seen[id].ok; } });
+    const p = n?Math.round(o/n*100):0;
+    rows+=`<tr><td>${SUBJECT_NAME[s]}</td><td>${n}</td>
+      <td><div class="bar"><i style="width:${p}%"></i></div>${p}%</td></tr>`;
+  }
+  $('statTable').innerHTML=rows;
+
+  $('histTable').innerHTML = h.length
+    ? '<tr><th>일시</th><th>점수</th><th>결과</th></tr>' + h.slice(0,20).map(x=>{
+        const d=new Date(x.t);
+        return `<tr><td>${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</td>
+          <td>${x.score}/${x.total}</td>
+          <td class="${x.pass?'pass':'fail'}" style="font-weight:700">${x.pass?'합격':'불합격'}</td></tr>`;
+      }).join('')
+    : '<tr><td class="muted">기록 없음</td></tr>';
+}
+
+/* ================= 설정 ================= */
+function renderSettings(){
+  $('setShuffle').checked = S.settings.shuffle;
+  $('setInstant').checked = S.settings.instant;
+  $('pwState').textContent = S.lock.on ? '🔒 잠금이 켜져 있습니다.' : '잠금이 꺼져 있습니다.';
+}
+$('setShuffle').onchange = e=>{ S.settings.shuffle=e.target.checked; save(); };
+$('setInstant').onchange = e=>{ S.settings.instant=e.target.checked; save(); };
+
+$('pwSet').onclick = ()=>{
+  modal(`<h2 style="margin-top:0">비밀번호 설정</h2>
+    <input type="password" id="np1" inputmode="numeric" placeholder="새 비밀번호">
+    <input type="password" id="np2" inputmode="numeric" placeholder="다시 입력">
+    <div id="npErr" class="err hide"></div>
+    <button class="btn" onclick="savePw()">저장</button>
+    <button class="btn ghost" onclick="closeModal()">취소</button>`);
+};
+window.savePw = function(){
+  const a=$('np1').value, b=$('np2').value, e=$('npErr');
+  if(!a){ e.textContent='비밀번호를 입력하세요.'; e.classList.remove('hide'); return; }
+  if(a!==b){ e.textContent='두 번 입력한 값이 다릅니다.'; e.classList.remove('hide'); return; }
+  S.lock={on:true, hash:hash(a)}; save(); closeModal(); renderSettings();
+  alert('잠금이 설정되었습니다.');
+};
+$('pwOff').onclick = ()=>{
+  if(!S.lock.on){ alert('잠금이 설정되어 있지 않습니다.'); return; }
+  const p = prompt('현재 비밀번호를 입력하세요.');
+  if(p===null) return;
+  if(hash(p)!==S.lock.hash){ alert('비밀번호가 올바르지 않습니다.'); return; }
+  S.lock={on:false,hash:''}; save(); renderSettings(); alert('잠금이 해제되었습니다.');
+};
+
+$('doExport').onclick = ()=>{
+  const blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  const d = new Date(), p = n=>String(n).padStart(2,'0');
+  a.href = URL.createObjectURL(blob);
+  a.download = `택시모의고사_백업_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}.json`;
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+};
+$('doImport').onclick = ()=>$('fileIn').click();
+$('fileIn').onchange = e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const d = JSON.parse(r.result);
+      if(typeof d!=='object' || d===null) throw 0;
+      if(!confirm('현재 기록을 덮어씁니다. 계속할까요?')) return;
+      S = Object.assign(structuredClone(DEFAULT_STATE), d,
+        {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{}),
+         lock:Object.assign({}, DEFAULT_STATE.lock, d.lock||{})});
+      save(); renderSettings(); alert('복원되었습니다.');
+    }catch(err){ alert('올바른 백업 파일이 아닙니다.'); }
+    e.target.value='';
+  };
+  r.readAsText(f);
+};
+$('doReset').onclick = ()=>{
+  if(!confirm('모든 기록·오답노트·설정을 삭제합니다. 계속할까요?')) return;
+  if(!confirm('되돌릴 수 없습니다. 정말 초기화할까요?')) return;
+  S = structuredClone(DEFAULT_STATE); save(); renderSettings(); alert('초기화되었습니다.');
+};
+
+/* ================= 잠금 진입 ================= */
+function tryUnlock(){
+  const v = $('lockPw').value;
+  if(hash(v)===S.lock.hash){ $('lockErr').classList.add('hide'); goHome(); }
+  else { $('lockErr').classList.remove('hide'); $('lockPw').value=''; }
+}
+$('lockGo').onclick = tryUnlock;
+$('lockPw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* ================= 시작 ================= */
+window.addEventListener('beforeunload', e=>{
+  if(E && !E.finished){ e.preventDefault(); e.returnValue=''; }
+});
+if(S.lock.on){ show('vLock'); setTimeout(()=>$('lockPw').focus(),100); }
+else { goHome(); }
+</script>
+</body>
+</html>
