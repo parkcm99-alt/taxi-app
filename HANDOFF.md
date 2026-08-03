@@ -3,7 +3,7 @@
 > **이 파일을 먼저 읽으세요.** 이전 세션의 대화 맥락 없이도 이어서 작업할 수 있도록 정리한 문서입니다.
 > **작업을 진행할 때마다 이 파일의 "진행 상태"와 "다음 할 일"을 갱신하세요.**
 
-**최종 갱신:** 2026-08-03 11:40 (Codex · GitHub 동기화)
+**최종 갱신:** 2026-08-03 13:40 (Codex · GitHub Pages 배포)
 **프로젝트 루트:** `/Users/parkyoungsun/Desktop/taxi-app`
 
 ---
@@ -45,6 +45,7 @@ cd /Users/parkyoungsun/Desktop/taxi-app && python3 tools/parse.py /tmp/check.jso
 | **과목 경계** | `TEXT_SVC_START = 173` 반영 완료 |
 | **앱 빌드** | `index.html` 약 364KB 단일 파일, 총 722문항. 아래 검증 전부 통과 |
 | **GitHub 소스 동기화** | `parkcm99-alt/taxi-app` 공개 저장소 `main` 브랜치 연결·최초 업로드 완료 |
+| **GitHub Pages** | `https://parkcm99-alt.github.io/taxi-app/` 배포·HTTP 200·로컬 파일 해시 일치 확인 |
 | README·지침서 | `README.md`, `CODEX_지침서.md` |
 
 **앱 검증 결과 (2026-08-03 완료):**
@@ -59,7 +60,6 @@ cd /Users/parkyoungsun/Desktop/taxi-app && python3 tools/parse.py /tmp/check.jso
 | 항목 | 담당 | 상태 |
 |---|---|---|
 | ⚠️복원 19문항 사용자 승인 | 사용자 | 새 문서의 특이사항 표 확인 필요 |
-| GitHub Pages 배포 | — | **사용자 확인 대기** (아래 4번) |
 
 ---
 
@@ -82,8 +82,9 @@ print("index.html 생성 완료")
 EOF
 ```
 
-### C. 배포
-아래 4번 참조.
+### C. 재배포 확인
+
+`main` 브랜치에 푸시하면 GitHub Pages가 자동으로 다시 빌드됩니다. 배포 주소에서 변경 사항을 확인합니다.
 
 ---
 
@@ -91,11 +92,11 @@ EOF
 
 | # | 내용 | 상태 |
 |:-:|---|---|
-| 1 | **GitHub Pages 배포** — 소스는 `parkcm99-alt/taxi-app`에 동기화됐으며 Pages 활성화만 남음 | ❓ 대기 |
+| 1 | **GitHub Pages 배포** — `https://parkcm99-alt.github.io/taxi-app/` | ✅ 완료 |
 | 2 | 새 문서의 **⚠️복원 19문항** 승인 | ❓ 사용자 검토 대기 |
-| 3 | 배포 시점 — 현재 722문항 빌드로 배포할지 | ❓ 대기 |
+| 3 | 배포 시점 — 현재 722문항 빌드 | ✅ 배포 완료 |
 
-**소스 동기화는 승인·완료됐습니다. GitHub Pages 활성화는 사용자 요청 후 진행하세요.**
+**이후 `main` 브랜치에 변경 사항을 푸시하면 GitHub Pages가 자동 갱신됩니다.**
 
 ---
 
