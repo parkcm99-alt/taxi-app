@@ -2,6 +2,8 @@
 
 CBT 기출복원 7회분과 텍스트 기출을 모아 만든 **단일 HTML 모의고사 웹앱**입니다.
 
+**GitHub 저장소:** https://github.com/parkcm99-alt/taxi-app
+
 > 🔄 **작업을 이어받는 경우 [HANDOFF.md](HANDOFF.md)를 먼저 읽으세요.**
 > 진행 상태·다음 할 일·함정 모음이 정리되어 있어 대화 맥락 없이도 3분 안에 재개할 수 있습니다.
 > 병렬 작업 규격은 [CODEX_지침서.md](CODEX_지침서.md)를 참조하세요.
