@@ -149,9 +149,9 @@ input[type=password],input[type=text]{width:100%;padding:13px;border-radius:11px
 <!-- ============ 잠금 ============ -->
 <section id="vLock" class="hide">
   <div class="card" style="margin-top:40px">
-    <h2>🔒 잠금</h2>
-    <p class="muted">비밀번호를 입력하세요.</p>
-    <input type="password" id="lockPw" inputmode="numeric" placeholder="비밀번호">
+    <h2>🔒 택시 모의고사</h2>
+    <p class="muted">접속 비밀번호를 입력하세요.</p>
+    <input type="password" id="lockPw" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="비밀번호 4자리">
     <div id="lockErr" class="err hide">비밀번호가 올바르지 않습니다.</div>
     <button class="btn" id="lockGo">확인</button>
   </div>
@@ -288,10 +288,8 @@ input[type=password],input[type=text]{width:100%;padding:13px;border-radius:11px
     </label>
   </div>
   <div class="card">
-    <h3>🔒 비밀번호 잠금</h3>
-    <div id="pwState" class="muted" style="margin-bottom:10px"></div>
-    <button class="btn sec" id="pwSet">비밀번호 설정 / 변경</button>
-    <button class="btn ghost" id="pwOff">잠금 해제</button>
+    <h3>🔒 사이트 접속 잠금</h3>
+    <p class="muted" style="margin-bottom:0">접속 비밀번호가 설정되어 있습니다. 브라우저 탭을 닫으면 다시 입력해야 합니다.</p>
   </div>
   <div class="card">
     <h3>💾 백업 · 복원</h3>
@@ -435,6 +433,8 @@ const FIGMAP = {
 
 /* ================= 상수 ================= */
 const KEY = 'taxiExamStats_v1';
+const SITE_LOCK_HASH = '2088252485';
+const SITE_UNLOCK_KEY = 'taxiSiteUnlocked_v1';
 const SUBJECT_QUOTA = {1:20, 2:20, 3:20, 4:10};
 const SUBJECT_NAME = {1:'법규', 2:'안전운행', 3:'운송서비스', 4:'서울지리'};
 const EXAM_MIN = 70, PASS = 42, TOTAL = 70;
@@ -443,8 +443,7 @@ const NUM = ['①','②','③','④'];
 /* ================= 저장소 ================= */
 const DEFAULT_STATE = {
   v:1, history:[], wrong:{}, seen:{},
-  settings:{shuffle:true, instant:false},
-  lock:{on:false, hash:''}
+  settings:{shuffle:true, instant:false}
 };
 let S = load();
 
@@ -454,8 +453,7 @@ function load(){
     if(!raw) return structuredClone(DEFAULT_STATE);
     const d = JSON.parse(raw);
     return Object.assign(structuredClone(DEFAULT_STATE), d,
-      {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{}),
-       lock:Object.assign({}, DEFAULT_STATE.lock, d.lock||{})});
+      {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{})});
   }catch(e){ return structuredClone(DEFAULT_STATE); }
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
@@ -795,33 +793,9 @@ function renderStats(){
 function renderSettings(){
   $('setShuffle').checked = S.settings.shuffle;
   $('setInstant').checked = S.settings.instant;
-  $('pwState').textContent = S.lock.on ? '🔒 잠금이 켜져 있습니다.' : '잠금이 꺼져 있습니다.';
 }
 $('setShuffle').onchange = e=>{ S.settings.shuffle=e.target.checked; save(); };
 $('setInstant').onchange = e=>{ S.settings.instant=e.target.checked; save(); };
-
-$('pwSet').onclick = ()=>{
-  modal(`<h2 style="margin-top:0">비밀번호 설정</h2>
-    <input type="password" id="np1" inputmode="numeric" placeholder="새 비밀번호">
-    <input type="password" id="np2" inputmode="numeric" placeholder="다시 입력">
-    <div id="npErr" class="err hide"></div>
-    <button class="btn" onclick="savePw()">저장</button>
-    <button class="btn ghost" onclick="closeModal()">취소</button>`);
-};
-window.savePw = function(){
-  const a=$('np1').value, b=$('np2').value, e=$('npErr');
-  if(!a){ e.textContent='비밀번호를 입력하세요.'; e.classList.remove('hide'); return; }
-  if(a!==b){ e.textContent='두 번 입력한 값이 다릅니다.'; e.classList.remove('hide'); return; }
-  S.lock={on:true, hash:hash(a)}; save(); closeModal(); renderSettings();
-  alert('잠금이 설정되었습니다.');
-};
-$('pwOff').onclick = ()=>{
-  if(!S.lock.on){ alert('잠금이 설정되어 있지 않습니다.'); return; }
-  const p = prompt('현재 비밀번호를 입력하세요.');
-  if(p===null) return;
-  if(hash(p)!==S.lock.hash){ alert('비밀번호가 올바르지 않습니다.'); return; }
-  S.lock={on:false,hash:''}; save(); renderSettings(); alert('잠금이 해제되었습니다.');
-};
 
 $('doExport').onclick = ()=>{
   const blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
@@ -841,8 +815,7 @@ $('fileIn').onchange = e=>{
       if(typeof d!=='object' || d===null) throw 0;
       if(!confirm('현재 기록을 덮어씁니다. 계속할까요?')) return;
       S = Object.assign(structuredClone(DEFAULT_STATE), d,
-        {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{}),
-         lock:Object.assign({}, DEFAULT_STATE.lock, d.lock||{})});
+        {settings:Object.assign({}, DEFAULT_STATE.settings, d.settings||{})});
       save(); renderSettings(); alert('복원되었습니다.');
     }catch(err){ alert('올바른 백업 파일이 아닙니다.'); }
     e.target.value='';
@@ -856,9 +829,21 @@ $('doReset').onclick = ()=>{
 };
 
 /* ================= 잠금 진입 ================= */
+function siteUnlocked(){
+  try { return sessionStorage.getItem(SITE_UNLOCK_KEY)==='1'; }
+  catch(e){ return false; }
+}
+function rememberSiteUnlock(){
+  try { sessionStorage.setItem(SITE_UNLOCK_KEY, '1'); } catch(e){}
+}
 function tryUnlock(){
   const v = $('lockPw').value;
-  if(hash(v)===S.lock.hash){ $('lockErr').classList.add('hide'); goHome(); }
+  if(hash(v)===SITE_LOCK_HASH){
+    rememberSiteUnlock();
+    $('lockErr').classList.add('hide');
+    $('lockPw').value='';
+    goHome();
+  }
   else { $('lockErr').classList.remove('hide'); $('lockPw').value=''; }
 }
 $('lockGo').onclick = tryUnlock;
@@ -868,8 +853,8 @@ $('lockPw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); })
 window.addEventListener('beforeunload', e=>{
   if(E && !E.finished){ e.preventDefault(); e.returnValue=''; }
 });
-if(S.lock.on){ show('vLock'); setTimeout(()=>$('lockPw').focus(),100); }
-else { goHome(); }
+if(siteUnlocked()){ goHome(); }
+else { show('vLock'); setTimeout(()=>$('lockPw').focus(),100); }
 </script>
 </body>
 </html>

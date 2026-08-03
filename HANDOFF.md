@@ -3,7 +3,7 @@
 > **이 파일을 먼저 읽으세요.** 이전 세션의 대화 맥락 없이도 이어서 작업할 수 있도록 정리한 문서입니다.
 > **작업을 진행할 때마다 이 파일의 "진행 상태"와 "다음 할 일"을 갱신하세요.**
 
-**최종 갱신:** 2026-08-03 13:40 (Codex · GitHub Pages 배포)
+**최종 갱신:** 2026-08-03 14:21 (Codex · 사이트 접속 잠금)
 **프로젝트 루트:** `/Users/parkyoungsun/Desktop/taxi-app`
 
 ---
@@ -46,6 +46,7 @@ cd /Users/parkyoungsun/Desktop/taxi-app && python3 tools/parse.py /tmp/check.jso
 | **앱 빌드** | `index.html` 약 364KB 단일 파일, 총 722문항. 아래 검증 전부 통과 |
 | **GitHub 소스 동기화** | `parkcm99-alt/taxi-app` 공개 저장소 `main` 브랜치 연결·최초 업로드 완료 |
 | **GitHub Pages** | `https://parkcm99-alt.github.io/taxi-app/` 배포·HTTP 200·로컬 파일 해시 일치 확인 |
+| **사이트 접속 잠금** | 공용 접속 비밀번호 적용. 비밀번호 원문은 저장하지 않고 해시만 포함, 탭 세션 동안 잠금 해제 유지 |
 | README·지침서 | `README.md`, `CODEX_지침서.md` |
 
 **앱 검증 결과 (2026-08-03 완료):**
